@@ -71,6 +71,59 @@ import java.util.function.Predicate;
 public class Solution {
 
     public static Result analyze(List<Person> persons, List<PhoneCode> phoneCodesList) {
-        return null;
+        Collection<CatalogEntry> catalog = Utils.transform(persons, new Function<Person, CatalogEntry>() {
+            @Override
+            public CatalogEntry apply(Person person) {
+                String personPhone = person.getPhoneNumber();
+                String city = "";
+                String region = "";
+                for(PhoneCode phone : phoneCodesList) {
+                    String code = phone.getCode();
+                    int tryFindPhoneCode = personPhone.indexOf(code);
+                    if (tryFindPhoneCode == -1) continue; // искомая последовательность не найдена
+                    if (tryFindPhoneCode != 2) continue; // искомая последовательность расположена после "+7" - искомый код
+                    // локализация найдена
+                    city = phone.getCity();
+                    region = phone.getRegion();
+                    break;
+                }
+                return new CatalogEntry(person, city, region);
+            }
+        });
+
+        Collection<CatalogEntry> regionRyazan =  Utils.filter(catalog, new Predicate<CatalogEntry>() {
+            @Override
+            public boolean test(CatalogEntry catalogEntry) {
+                return (catalogEntry.getRegion().compareToIgnoreCase("Рязанская область") == 0);
+            }
+        });
+
+        int pensioners = Utils.count(regionRyazan, new Predicate<CatalogEntry>() {
+            @Override
+            public boolean test(CatalogEntry catalogEntry) {
+                return catalogEntry.getPerson().getAge() >= 70;
+            }
+        });
+
+        Collection<CatalogEntry> cityRyazanCatalog = Utils.filter(catalog, new Predicate<CatalogEntry>() {
+            @Override
+            public boolean test(CatalogEntry catalogEntry) {
+                return (catalogEntry.getCity().compareToIgnoreCase("Рязань") == 0);
+            }
+        });
+
+        boolean hasFasionDesigners = Utils.contains(cityRyazanCatalog, new Predicate<CatalogEntry>() {
+            @Override
+            public boolean test(CatalogEntry catalogEntry) {
+                return (catalogEntry.getPerson().getProfession().compareToIgnoreCase("Модельер") == 0);
+            }
+        });
+
+        Result result = new Result();
+        result.setRegionRyazanCount(regionRyazan.size());
+        result.setCityRyazanCount(cityRyazanCatalog.size());
+        result.setPensionersCount(pensioners);
+        result.setHasFasionDesigners(hasFasionDesigners);
+        return result;
     }
 }
