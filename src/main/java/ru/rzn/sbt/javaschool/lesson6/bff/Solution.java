@@ -1,9 +1,6 @@
 package ru.rzn.sbt.javaschool.lesson6.bff;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Solution {
 
@@ -19,6 +16,19 @@ public class Solution {
      * с парами лучших друзей.
      */
     public static int findBestFriends(Collection<Person> persons) {
-        return 0;
+        Collection<TwoItems<Person>> set = new TreeSet<>();
+        for(Person item : persons) {
+            if (null == item) continue;
+            Person itemBestFriend = item.getBestFriend();
+            for(Person other : persons) {
+                if (other == null) continue;
+                if (other == item) continue;
+                Person otherBestFriend = other.getBestFriend();
+                if (Objects.equals(itemBestFriend, other) && Objects.equals(otherBestFriend, item)) {
+                    set.add(new TwoItems<>(item, other));
+                }
+            }
+        }
+        return set.size();
     }
 }
