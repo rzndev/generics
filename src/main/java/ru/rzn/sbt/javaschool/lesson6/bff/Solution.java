@@ -16,7 +16,7 @@ public class Solution {
      * с парами лучших друзей.
      */
     public static int findBestFriends(Collection<Person> persons) {
-        Collection<TwoItems<Person>> set = new TreeSet<>();
+        Collection<TwoItems<Person>> set = new HashSet<>();
         for(Person item : persons) {
             if (null == item) continue;
             Person itemBestFriend = item.getBestFriend();

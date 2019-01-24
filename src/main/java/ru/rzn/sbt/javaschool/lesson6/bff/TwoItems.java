@@ -1,6 +1,6 @@
 package ru.rzn.sbt.javaschool.lesson6.bff;
 
-public class TwoItems<T> implements Comparable<T> {
+public class TwoItems<T> {
     private T item1;
     private T item2;
 
@@ -35,7 +35,7 @@ public class TwoItems<T> implements Comparable<T> {
     }
 
     @Override
-    public int compareTo(T o) {
-        return equals(o) ? 0 : -1;
+    public int hashCode() {
+        return item1.hashCode() + item2.hashCode();
     }
 }
