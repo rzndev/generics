@@ -71,6 +71,7 @@ import java.util.function.Predicate;
 public class Solution {
 
     public static Result analyze(List<Person> persons, List<PhoneCode> phoneCodesList) {
+        // 3. Формирование справочника абонентов
         Collection<CatalogEntry> catalog = Utils.transform(persons, new Function<Person, CatalogEntry>() {
             @Override
             public CatalogEntry apply(Person person) {
@@ -91,6 +92,7 @@ public class Solution {
             }
         });
 
+        // 5. Фильтрация абонентов, зарегистрированных в рязанской области
         Collection<CatalogEntry> regionRyazan =  Utils.filter(catalog, new Predicate<CatalogEntry>() {
             @Override
             public boolean test(CatalogEntry catalogEntry) {
@@ -98,6 +100,7 @@ public class Solution {
             }
         });
 
+        // 7. Подсчет количества абонентов пенсионного возраста в Рязанской области
         int pensioners = Utils.count(regionRyazan, new Predicate<CatalogEntry>() {
             @Override
             public boolean test(CatalogEntry catalogEntry) {
@@ -105,6 +108,7 @@ public class Solution {
             }
         });
 
+        // 8. Фильтрация абонентов, зарегистрированных в Рязани
         Collection<CatalogEntry> cityRyazanCatalog = Utils.filter(catalog, new Predicate<CatalogEntry>() {
             @Override
             public boolean test(CatalogEntry catalogEntry) {
@@ -112,13 +116,14 @@ public class Solution {
             }
         });
 
+        // 10. Проверка наличия абонентов с профессией модельер в Рязани
         boolean hasFasionDesigners = Utils.contains(cityRyazanCatalog, new Predicate<CatalogEntry>() {
             @Override
             public boolean test(CatalogEntry catalogEntry) {
                 return (catalogEntry.getPerson().getProfession().compareToIgnoreCase("Модельер") == 0);
             }
         });
-
+        // Формирования результата
         Result result = new Result();
         result.setRegionRyazanCount(regionRyazan.size());
         result.setCityRyazanCount(cityRyazanCatalog.size());
